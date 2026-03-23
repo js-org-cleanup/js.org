@@ -47,8 +47,8 @@ jobs:
                       matchingPullRequests(first: 1) {
                         nodes {
                           number
-                          htmlUrl
-                          user {
+                          permalink
+                          author {
                             login
                           }
                         }
