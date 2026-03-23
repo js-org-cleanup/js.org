@@ -48,6 +48,7 @@ jobs:
               repo: context.repo.repo,
               run_id: context.payload.workflow_run.id,
             });
+            console.log(workflowRun.data);
 
             const checks = await github.rest.checks.listForSuite({
               owner: context.repo.owner,
@@ -73,7 +74,7 @@ jobs:
             }
 
             // 2. PR description validation result, linking to the raw PR template file for reference
-            if (descriptionCheck.conclusion === 'failure') {
+            if (descriptionCheck.conclusion === "failure") {
               const annotations = await github.rest.checks.listAnnotations({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -101,7 +102,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: pr.number,
-            }).then(r => r.data.find(c => c.user.login === 'github-actions[bot]' && c.body.startsWith("<!-- jsorg-validation -->\n\n")));
+            }).then(r => r.data.find(c => c.user.login === "github-actions[bot]" && c.body.startsWith("<!-- jsorg-validation -->\n\n")));
 
             await existingComment
               ? github.rest.issues.updateComment({
