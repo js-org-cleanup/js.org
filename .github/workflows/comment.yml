@@ -27,6 +27,39 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
+            // Perform a GraphQL query to get the workflow run, its checks, the annotations for the checks, and the PR associated with the run
+            const data = await github.graphql(`
+              query($runId: ID!) {
+                node(id: $runId) {
+                  ... on WorkflowRun {
+                    checkSuite {
+                      checkRuns(first: 2) {
+                        nodes {
+                          name
+                          conclusion
+                          annotations(first: 1) {
+                            nodes {
+                              message
+                            }
+                          }
+                        }
+                      }
+                      matchingPullRequests(first: 1) {
+                        nodes {
+                          number
+                          htmlUrl
+                          user {
+                            login
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            `, { runId: context.payload.workflow_run.id });
+            console.dir(data, { depth: null });
+
             // Rely on an API call to find the PR for forks
             let pr = context.payload.workflow_run.pull_requests[0];
             if (!pr) {
